@@ -2,6 +2,7 @@ package com.demo.vertx.verticle;
 
 import com.demo.vertx.util.EventBusAddress;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HttpServerVerticle extends AbstractVerticle {
+    public Vertx vertx;
     private WebClient webClient;
     private static final Logger logger = LogManager.getLogger(ThirdPartyVerticle.class);
     @Override
