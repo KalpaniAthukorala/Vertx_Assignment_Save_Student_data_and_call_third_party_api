@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HttpServerVerticle extends AbstractVerticle {
-    public Vertx vertx;
+//    public Vertx vertx;
     private WebClient webClient;
     private static final Logger logger = LogManager.getLogger(ThirdPartyVerticle.class);
     @Override
@@ -29,6 +29,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         JsonObject student = ctx.getBodyAsJson();
         vertx.eventBus().request(EventBusAddress.NAME_SAVE_ADDRESS, student, reply -> {
             if (reply.succeeded()) {
+                callThirdParty(student);
                 ctx.response().end((String) reply.result().body());
             } else {
                 ctx.response().end(reply.cause().getMessage());
@@ -36,4 +37,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         });
     }
 
+    void callThirdParty(JsonObject student) {
+        vertx.eventBus().send(EventBusAddress.CALL_THIRD_PARTY_SERVICE, student);
+    }
 }

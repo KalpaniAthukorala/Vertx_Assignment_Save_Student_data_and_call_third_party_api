@@ -33,7 +33,6 @@ public class DBVerticle extends AbstractVerticle {
             saveStudentData(student)
                     .onSuccess(success -> {
                         message.reply(success);
-                        callThirdParty(student);
                     }).onFailure(throwable -> {
                         logger.error("Error while saving student data to database");
                         message.fail(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "Error while saving student data to database");
@@ -44,10 +43,10 @@ public class DBVerticle extends AbstractVerticle {
 
     public Future<String> saveStudentData(JsonObject student) {
         Promise<String> promise = Promise.promise();
-        String username = student.getString("u_id");
+        String u_id = student.getString("u_id");
         String lastname = student.getString("lastname");
         jdbcPool.preparedQuery(SQLConstants.INSERT_STUDENT)
-                .execute(Tuple.of(username, lastname))
+                .execute(Tuple.of(u_id, lastname))
                 .onFailure(throwable -> {
                     logger.error("Failure: {}", throwable.getCause().getMessage());
                     promise.fail(throwable.getCause().getMessage());
@@ -62,7 +61,4 @@ public class DBVerticle extends AbstractVerticle {
         return promise.future();
     }
 
-    void callThirdParty(JsonObject student) {
-        vertx.eventBus().request(EventBusAddress.CALL_THIRD_PARTY_SERVICE, student);
-    }
 }
